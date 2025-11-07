@@ -67,22 +67,31 @@ stop_xui() {
 uninstall_xui() {
     print_info "Uninstalling X-UI panel..."
 
-    # Try the official uninstall command first
-    if command -v x-ui &> /dev/null; then
-        x-ui uninstall 2>/dev/null || true
-    fi
+    # Skip the official uninstall command (it's interactive and hangs)
+    # Go straight to manual cleanup
 
-    # Manual cleanup
-    systemctl disable x-ui 2>/dev/null || true
+    # Stop and disable service
     systemctl stop x-ui 2>/dev/null || true
+    systemctl disable x-ui 2>/dev/null || true
+    systemctl kill x-ui 2>/dev/null || true
 
+    # Remove service file
     rm -f /etc/systemd/system/x-ui.service
+    rm -f /lib/systemd/system/x-ui.service
+
+    # Remove X-UI files
     rm -f /usr/local/x-ui/x-ui
     rm -rf /usr/local/x-ui
     rm -f /usr/bin/x-ui
-    rm -rf /etc/x-ui
+    rm -f /usr/local/bin/x-ui
 
+    # Remove configuration and data
+    rm -rf /etc/x-ui
+    rm -rf /var/log/x-ui
+
+    # Reload systemd
     systemctl daemon-reload
+    systemctl reset-failed 2>/dev/null || true
 
     print_success "X-UI panel uninstalled"
 }
