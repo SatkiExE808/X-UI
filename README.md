@@ -23,26 +23,59 @@ Before running the installation script, ensure:
 
 ## Quick Start
 
-### One-Line Installation
+### One-Line Installation (Always Latest)
 
+**Install from main branch (stable):**
 ```bash
 bash <(curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/main/install-xui.sh)
 ```
 
+**Or using wget:**
+```bash
+bash <(wget -qO- https://raw.githubusercontent.com/SatkiExE808/X-UI/main/install-xui.sh)
+```
+
+**Install from development branch (latest features):**
+```bash
+bash <(curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/claude/x-ui-panel-setup-011CUsYrmmfVeqB3WxdFdhFT/install-xui.sh)
+```
+
 ### Manual Installation
 
-1. **Download the script:**
+**Method 1: Direct download (always gets latest)**
 ```bash
-wget https://raw.githubusercontent.com/SatkiExE808/X-UI/main/install-xui.sh
-```
+# Download latest version
+curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/main/install-xui.sh -o install-xui.sh
 
-2. **Make it executable:**
-```bash
+# Make executable
 chmod +x install-xui.sh
+
+# Run installer
+./install-xui.sh
 ```
 
-3. **Run the installer:**
+**Method 2: Clone repository**
 ```bash
+# Clone the repository (gets all files)
+git clone https://github.com/SatkiExE808/X-UI.git
+cd X-UI
+
+# Make scripts executable
+chmod +x install-xui.sh uninstall-xui.sh
+
+# Run installer
+./install-xui.sh
+```
+
+**Method 3: Using wget**
+```bash
+# Download latest version
+wget https://raw.githubusercontent.com/SatkiExE808/X-UI/main/install-xui.sh
+
+# Make executable
+chmod +x install-xui.sh
+
+# Run installer
 ./install-xui.sh
 ```
 
@@ -187,15 +220,42 @@ systemctl stop nginx
 
 ### Complete Uninstallation (Recommended)
 
-Use the comprehensive uninstall script to remove everything:
+Use the comprehensive uninstall script to remove everything.
 
+**One-line uninstall (always latest):**
+
+Using curl:
 ```bash
 bash <(curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/main/uninstall-xui.sh)
 ```
 
-Or if you have the script locally:
+Using wget:
+```bash
+bash <(wget -qO- https://raw.githubusercontent.com/SatkiExE808/X-UI/main/uninstall-xui.sh)
+```
+
+**Development branch (latest features):**
+```bash
+bash <(curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/claude/x-ui-panel-setup-011CUsYrmmfVeqB3WxdFdhFT/uninstall-xui.sh)
+```
+
+**Or download and run:**
 
 ```bash
+# Download latest uninstall script
+curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/main/uninstall-xui.sh -o uninstall-xui.sh
+
+# Make executable
+chmod +x uninstall-xui.sh
+
+# Run uninstaller
+./uninstall-xui.sh
+```
+
+**If you have the repository cloned:**
+
+```bash
+cd X-UI
 ./uninstall-xui.sh
 ```
 

@@ -25,10 +25,28 @@ TTL: Auto or 3600
 
 ### Step 2: Run the Installation Script
 
-SSH into your server and run:
+SSH into your server and run one of these commands:
 
+**Option 1: Using curl (recommended)**
 ```bash
 bash <(curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/main/install-xui.sh)
+```
+
+**Option 2: Using wget**
+```bash
+bash <(wget -qO- https://raw.githubusercontent.com/SatkiExE808/X-UI/main/install-xui.sh)
+```
+
+**Option 3: Latest development version**
+```bash
+bash <(curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/claude/x-ui-panel-setup-011CUsYrmmfVeqB3WxdFdhFT/install-xui.sh)
+```
+
+**Option 4: Download first, then run**
+```bash
+curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/main/install-xui.sh -o install-xui.sh
+chmod +x install-xui.sh
+./install-xui.sh
 ```
 
 ### Step 3: Follow the Prompts
@@ -170,10 +188,28 @@ After installation:
 
 ## Uninstallation
 
-If you need to completely remove X-UI:
+If you need to completely remove X-UI, use one of these commands:
 
+**Using curl:**
 ```bash
 bash <(curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/main/uninstall-xui.sh)
+```
+
+**Using wget:**
+```bash
+bash <(wget -qO- https://raw.githubusercontent.com/SatkiExE808/X-UI/main/uninstall-xui.sh)
+```
+
+**Latest development version:**
+```bash
+bash <(curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/claude/x-ui-panel-setup-011CUsYrmmfVeqB3WxdFdhFT/uninstall-xui.sh)
+```
+
+**Download and run:**
+```bash
+curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/main/uninstall-xui.sh -o uninstall-xui.sh
+chmod +x uninstall-xui.sh
+./uninstall-xui.sh
 ```
 
 This will remove:
