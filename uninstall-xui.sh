@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# X-UI Panel Uninstallation Script
-# This script completely removes X-UI panel and cleans up all related configurations
+# 3x-ui Panel Uninstallation Script
+# This script completely removes 3x-ui (and legacy x-ui) panel and cleans up all related configurations
+# Compatible with both x-ui and 3x-ui installations
 
 set -e
 
@@ -51,21 +52,21 @@ get_domain_from_info() {
     fi
 }
 
-# Stop X-UI service
+# Stop 3x-ui service
 stop_xui() {
-    print_info "Stopping X-UI service..."
+    print_info "Stopping 3x-ui service..."
 
     if systemctl is-active --quiet x-ui; then
         systemctl stop x-ui 2>/dev/null || true
-        print_success "X-UI service stopped"
+        print_success "3x-ui service stopped"
     else
-        print_info "X-UI service is not running"
+        print_info "3x-ui service is not running"
     fi
 }
 
-# Uninstall X-UI
+# Uninstall 3x-ui
 uninstall_xui() {
-    print_info "Uninstalling X-UI panel..."
+    print_info "Uninstalling 3x-ui panel..."
 
     # Skip the official uninstall command (it's interactive and hangs)
     # Go straight to manual cleanup
@@ -93,7 +94,7 @@ uninstall_xui() {
     systemctl daemon-reload
     systemctl reset-failed 2>/dev/null || true
 
-    print_success "X-UI panel uninstalled"
+    print_success "3x-ui panel uninstalled"
 }
 
 # Remove SSL certificates
@@ -198,11 +199,11 @@ remove_dependencies() {
 display_summary() {
     echo ""
     echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
-    echo -e "${GREEN}           X-UI Panel Uninstallation Complete!            ${NC}"
+    echo -e "${GREEN}          3x-ui Panel Uninstallation Complete!            ${NC}"
     echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
     echo ""
     echo -e "${BLUE}Removed:${NC}"
-    echo -e "  ✓ X-UI panel and service"
+    echo -e "  ✓ 3x-ui panel and service"
     echo -e "  ✓ SSL certificates (if domain was provided)"
     echo -e "  ✓ Firewall rules"
     echo -e "  ✓ Cron jobs"
@@ -221,9 +222,9 @@ confirm_uninstall() {
     cat << "EOF"
 ╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
-║           X-UI Panel Uninstallation Script               ║
+║          3x-ui Panel Uninstallation Script               ║
 ║                                                           ║
-║   ⚠️  WARNING: This will completely remove X-UI panel   ║
+║   ⚠️  WARNING: This will completely remove 3x-ui panel  ║
 ║      and all related configurations!                     ║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
@@ -232,7 +233,7 @@ EOF
 
     echo ""
     print_warning "This script will remove:"
-    print_warning "  • X-UI panel installation"
+    print_warning "  • 3x-ui panel installation"
     print_warning "  • SSL certificates"
     print_warning "  • Firewall rules"
     print_warning "  • Cron jobs for SSL renewal"

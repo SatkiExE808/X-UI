@@ -1,15 +1,24 @@
-# X-UI Panel Automated Installer
+# 3x-ui Panel Automated Installer
 
-A comprehensive, automated installation script for X-UI panel with built-in HTTPS setup using Let's Encrypt SSL certificates.
+A comprehensive, automated installation script for **3x-ui panel** with built-in HTTPS setup using Let's Encrypt SSL certificates.
+
+**3x-ui** is an enhanced version of x-ui with:
+- 🎨 Better, more modern UI/UX
+- 🚀 More features and protocols
+- 🔧 Active development and updates
+- 🌐 Multi-language support (English by default)
+- 📊 Enhanced monitoring and statistics
 
 ## Features
 
-✅ **Interactive Installation** - Prompts for domain and email during setup
+✅ **Interactive Installation** - Prompts for domain, email, username, password, and port during setup
 ✅ **Automatic HTTPS** - Configures Let's Encrypt SSL certificates automatically
 ✅ **Firewall Configuration** - Sets up firewall rules automatically
 ✅ **SSL Auto-Renewal** - Configures automatic certificate renewal
 ✅ **Security Focused** - Includes security best practices and warnings
+✅ **English Interface** - Panel automatically configured with English language
 ✅ **User-Friendly** - Color-coded output and clear instructions
+✅ **Enhanced 3x-ui** - Latest version with improved features
 
 ## Prerequisites
 
@@ -86,10 +95,14 @@ The script will guide you through:
 1. **Domain Input** - Enter your fully qualified domain name (e.g., `panel.example.com`)
 2. **Email Input** - Provide an email for SSL certificate notifications
 3. **Port Selection** - Choose your panel port (default: 54321, or specify custom port)
-4. **Automatic Setup** - Sit back while the script:
+4. **Username Setup** - Create your admin username (default: admin, min 3 characters)
+5. **Password Setup** - Create your secure password (min 6 characters, with confirmation)
+6. **Automatic Setup** - Sit back while the script:
    - Updates system packages
    - Installs dependencies
-   - Installs X-UI panel
+   - Installs **3x-ui panel** (latest enhanced version)
+   - Configures username, password, and port automatically
+   - Sets panel language to English
    - Configures firewall rules for your chosen port
    - Obtains SSL certificate
    - Sets up HTTPS
@@ -110,10 +123,11 @@ Panel Access:
   HTTP URL (access first):  http://your-domain.com:YOUR_PORT
   HTTPS URL (after setup):  https://your-domain.com:YOUR_PORT
 
-Default Credentials:
-  Username: admin
-  Password: admin
-  ⚠ CHANGE THESE IMMEDIATELY AFTER LOGIN!
+Your Login Credentials:
+  Username: your-username
+  Password: [SET BY YOU]
+  Port:     YOUR_PORT
+  Language: English (en_US)
 ```
 
 ### Important First Steps
@@ -121,10 +135,9 @@ Default Credentials:
 **⚠️ IMPORTANT: Use HTTP first, not HTTPS! SSL is not configured in the panel yet.**
 
 1. **Access the panel** at `http://your-domain.com:YOUR_PORT` (use HTTP, not HTTPS)
-2. **Login** with default credentials (admin/admin)
-3. **Change default credentials immediately!**
-4. **Change the port** (if you selected a custom port) in Panel Settings
-5. **Configure SSL in panel settings:**
+2. **Login** with your username and password (already configured!)
+3. **The panel is already in English** - no language change needed
+4. **Configure SSL in panel settings:**
    - Go to: Panel Settings → Certificate Configuration
    - Certificate Path: `/etc/letsencrypt/live/your-domain.com/fullchain.pem`
    - Private Key Path: `/etc/letsencrypt/live/your-domain.com/privkey.pem`

@@ -1,4 +1,4 @@
-# X-UI Panel - Quick Start Guide
+# 3x-ui Panel - Quick Start Guide
 
 ## What You Need
 
@@ -56,6 +56,8 @@ The script will ask you:
 1. **Domain Name**: Enter your full domain (e.g., `panel.yourdomain.com`)
 2. **Email Address**: Enter your email for SSL certificate notifications
 3. **Port Number**: Choose your panel port (default: 54321, or enter custom port)
+4. **Username**: Create your admin username (default: admin, min 3 chars)
+5. **Password**: Create your secure password (min 6 chars, with confirmation)
 
 Example interaction:
 ```
@@ -73,13 +75,26 @@ Enter your email for SSL certificate (Let's Encrypt): you@email.com
 Enter port for X-UI panel (default: 54321): 8443
 ════════════════════════════════════════
 [SUCCESS] Port set to: 8443
+
+════════════════════════════════════════
+Enter username for X-UI panel (default: admin): myuser
+════════════════════════════════════════
+[SUCCESS] Username set to: myuser
+
+════════════════════════════════════════
+Enter password for X-UI panel (min 6 characters): ******
+Confirm password: ******
+════════════════════════════════════════
+[SUCCESS] Password set successfully
 ```
 
 ### Step 4: Wait for Installation
 
 The script will automatically:
 - ✅ Install all required packages
-- ✅ Install X-UI panel
+- ✅ Install 3x-ui panel (enhanced version with better UI/UX and more features)
+- ✅ Configure your username, password, and port
+- ✅ Set panel language to English
 - ✅ Configure firewall
 - ✅ Obtain SSL certificate
 - ✅ Setup HTTPS
@@ -93,16 +108,18 @@ After installation, you'll see:
 
 ```
 ═══════════════════════════════════════════════════════════
-           X-UI Panel Installation Complete!
+          3x-ui Panel Installation Complete!
 ═══════════════════════════════════════════════════════════
 
 Panel Access:
   HTTP URL (access first):  http://panel.yourdomain.com:YOUR_PORT
   HTTPS URL (after setup):  https://panel.yourdomain.com:YOUR_PORT
 
-Default Credentials:
-  Username: admin
-  Password: admin
+Your Login Credentials:
+  Username: myuser
+  Password: [SET BY YOU]
+  Port:     8443
+  Language: English (en-US)
 ```
 
 ### Step 6: First Login
@@ -110,19 +127,12 @@ Default Credentials:
 **⚠️ IMPORTANT: Use HTTP first, not HTTPS!**
 
 1. Open your browser and visit: `http://panel.yourdomain.com:8443` **(use HTTP, not HTTPS)**
-2. Login with:
-   - Username: `admin`
-   - Password: `admin`
-3. **IMMEDIATELY CHANGE YOUR PASSWORD!**
+2. Login with your username and password (already configured!)
+3. The panel is already in English - no language change needed!
 
-### Step 7: Configure Panel Settings
+### Step 7: Configure SSL Certificate
 
-1. **Change the port** (if you selected a custom port):
-   - Go to **Panel Settings**
-   - Change the port to match what you selected during installation
-   - Restart the panel
-
-2. **Configure SSL Certificate**:
+**Configure SSL Certificate**:
    - Go to **Panel Settings** → **Certificate Configuration**
    - Enter the certificate paths shown during installation:
      - **Public Key File Path**: `/etc/letsencrypt/live/panel.yourdomain.com/fullchain.pem`
@@ -188,7 +198,7 @@ After installation:
 
 ## Uninstallation
 
-If you need to completely remove X-UI, use one of these commands:
+If you need to completely remove 3x-ui, use one of these commands:
 
 **Using curl:**
 ```bash
@@ -213,7 +223,7 @@ chmod +x uninstall-xui.sh
 ```
 
 This will remove:
-- X-UI panel and all services
+- 3x-ui panel and all services
 - SSL certificates
 - Firewall rules
 - Cron jobs
