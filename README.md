@@ -1,6 +1,13 @@
-# X-UI Panel Automated Installer
+# 3x-ui Panel Automated Installer
 
-A comprehensive, automated installation script for X-UI panel with built-in HTTPS setup using Let's Encrypt SSL certificates.
+A comprehensive, automated installation script for **3x-ui panel** with built-in HTTPS setup using Let's Encrypt SSL certificates.
+
+**3x-ui** is an enhanced version of x-ui with:
+- 🎨 Better, more modern UI/UX
+- 🚀 More features and protocols
+- 🔧 Active development and updates
+- 🌐 Multi-language support (English by default)
+- 📊 Enhanced monitoring and statistics
 
 ## Features
 
@@ -11,6 +18,7 @@ A comprehensive, automated installation script for X-UI panel with built-in HTTP
 ✅ **Security Focused** - Includes security best practices and warnings
 ✅ **English Interface** - Panel automatically configured with English language
 ✅ **User-Friendly** - Color-coded output and clear instructions
+✅ **Enhanced 3x-ui** - Latest version with improved features
 
 ## Prerequisites
 
@@ -92,7 +100,7 @@ The script will guide you through:
 6. **Automatic Setup** - Sit back while the script:
    - Updates system packages
    - Installs dependencies
-   - Installs X-UI panel
+   - Installs **3x-ui panel** (latest enhanced version)
    - Configures username, password, and port automatically
    - Sets panel language to English
    - Configures firewall rules for your chosen port

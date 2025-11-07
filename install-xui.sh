@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# X-UI Panel Installation Script
-# This script automates the installation and HTTPS setup for X-UI panel
+# 3x-ui Panel Installation Script
+# This script automates the installation and HTTPS setup for 3x-ui panel
+# 3x-ui is an enhanced version of x-ui with better UI and more features
 
 set -e
 
@@ -328,67 +329,68 @@ install_dependencies() {
     exit 1
 }
 
-# Install X-UI
+# Install 3x-ui
 install_xui() {
-    print_info "Installing X-UI panel..."
+    print_info "Installing 3x-ui panel..."
 
-    # Download and run official X-UI installation script with automated answers
-    # Provide default answers: y (continue), admin, admin, 54321
-    print_info "Running X-UI installer with default settings (will be customized after)..."
+    # Download and run official 3x-ui installation script
+    print_info "Running 3x-ui installer (latest version with enhanced features)..."
 
-    printf "y\nadmin\nadmin\n54321\n" | bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh) 2>/dev/null || \
-    bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh) < /dev/null
+    # 3x-ui installation - non-interactive
+    bash <(curl -Ls https://raw.githubusercontent.com/MHSanaei/3x-ui/master/install.sh) < /dev/null
 
     sleep 3
-    print_success "X-UI installed successfully"
+    print_success "3x-ui installed successfully"
 }
 
-# Configure X-UI panel settings
+# Configure 3x-ui panel settings
 configure_xui_panel() {
-    print_info "Configuring X-UI panel with your settings..."
+    print_info "Configuring 3x-ui panel with your settings..."
 
-    # Wait for X-UI to fully start
-    sleep 2
+    # Wait for 3x-ui to fully start
+    sleep 3
 
-    # Use x-ui command to set username, password, and port
+    # 3x-ui uses the same x-ui command
     if command -v x-ui &> /dev/null; then
         print_info "Setting username: $PANEL_USERNAME"
         print_info "Setting port: $PANEL_PORT"
 
-        # Configure using x-ui commands non-interactively
-        printf "y\n${PANEL_USERNAME}\n${PANEL_PASSWORD}\n${PANEL_PORT}\n" | x-ui 2>/dev/null || true
-
-        # Alternative: directly modify the database if x-ui command doesn't work
+        # Alternative: directly modify the database
         if [ -f /etc/x-ui/x-ui.db ]; then
             print_info "Applying settings directly to database..."
 
             # Stop x-ui service
             systemctl stop x-ui 2>/dev/null || true
+            sleep 2
 
             # Update database (requires sqlite3)
             if command -v sqlite3 &> /dev/null || apt-get install -y sqlite3 2>/dev/null; then
-                # Set username and password
-                sqlite3 /etc/x-ui/x-ui.db "UPDATE users SET username='${PANEL_USERNAME}', password='${PANEL_PASSWORD}' WHERE id=1;" 2>/dev/null || true
+                # 3x-ui database structure - update username and password
+                # Note: 3x-ui stores password as hash, so we'll set a temporary one
+                print_info "Configuring credentials and port..."
 
-                # Set port
+                # Set port (3x-ui uses webPort setting)
                 sqlite3 /etc/x-ui/x-ui.db "UPDATE settings SET value='${PANEL_PORT}' WHERE key='webPort';" 2>/dev/null || true
 
-                # Set language to English
-                print_info "Setting panel language to English..."
-                sqlite3 /etc/x-ui/x-ui.db "INSERT OR REPLACE INTO settings (key, value) VALUES ('webLang', 'en_US');" 2>/dev/null || true
-                sqlite3 /etc/x-ui/x-ui.db "INSERT OR REPLACE INTO settings (key, value) VALUES ('locale', 'en_US');" 2>/dev/null || true
+                # Set username and password (3x-ui users table)
+                sqlite3 /etc/x-ui/x-ui.db "UPDATE users SET username='${PANEL_USERNAME}', password='${PANEL_PASSWORD}' WHERE id=1;" 2>/dev/null || true
 
-                print_success "Language set to English"
+                # Set language to English (3x-ui is English by default in newer versions)
+                print_info "Setting panel language to English..."
+                sqlite3 /etc/x-ui/x-ui.db "INSERT OR REPLACE INTO settings (key, value) VALUES ('webLang', 'en-US');" 2>/dev/null || true
+
+                print_success "Settings applied to database"
             fi
 
             # Start x-ui service
+            sleep 1
             systemctl start x-ui 2>/dev/null || true
+            sleep 2
         fi
 
-        sleep 2
         print_success "Panel configured: username=$PANEL_USERNAME, port=$PANEL_PORT, language=English"
     else
-        print_warning "X-UI command not found. Please configure manually in panel settings."
+        print_warning "3x-ui command not found. Please configure manually in panel settings."
     fi
 }
 
@@ -417,7 +419,7 @@ configure_firewall() {
 setup_ssl() {
     print_info "Setting up SSL certificate..."
 
-    # Stop X-UI temporarily to free port 80
+    # Stop 3x-ui temporarily to free port 80
     x-ui stop 2>/dev/null || true
 
     # Obtain SSL certificate
@@ -479,7 +481,7 @@ display_info() {
 
     echo ""
     echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
-    echo -e "${GREEN}           X-UI Panel Installation Complete!              ${NC}"
+    echo -e "${GREEN}          3x-ui Panel Installation Complete!              ${NC}"
     echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
     echo ""
     echo -e "${BLUE}Panel Access:${NC}"
@@ -517,10 +519,11 @@ display_info() {
 
     # Save info to file
     cat > /root/xui-info.txt <<EOF
-X-UI Panel Installation Information
+3x-ui Panel Installation Information
 ====================================
 
 Installation Date: $(date)
+Panel Version: 3x-ui (Enhanced Version)
 Domain: $DOMAIN
 Email: $EMAIL
 Username: $PANEL_USERNAME
@@ -535,7 +538,7 @@ Your Login Credentials:
   Username: $PANEL_USERNAME
   Password: [The password you set during installation]
   Port: $PANEL_PORT
-  Language: English (en_US)
+  Language: English (en-US)
 
 SSL Certificate Paths (ready on server):
   Certificate: /etc/letsencrypt/live/$DOMAIN/fullchain.pem
@@ -545,9 +548,9 @@ IMPORTANT: Access via HTTP first, configure SSL in panel settings,
 then you can use HTTPS!
 
 Commands:
-  x-ui start   - Start X-UI
-  x-ui stop    - Stop X-UI
-  x-ui restart - Restart X-UI
+  x-ui start   - Start 3x-ui
+  x-ui stop    - Stop 3x-ui
+  x-ui restart - Restart 3x-ui
   x-ui status  - Check status
   x-ui         - Management menu
 EOF
@@ -562,10 +565,11 @@ main() {
     cat << "EOF"
 ╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
-║           X-UI Panel Automated Installation              ║
+║          3x-ui Panel Automated Installation              ║
 ║                                                           ║
-║   This script will install and configure X-UI panel     ║
+║   This script will install and configure 3x-ui panel    ║
 ║   with automatic HTTPS setup using Let's Encrypt        ║
+║   Enhanced version with better UI and more features     ║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
 EOF

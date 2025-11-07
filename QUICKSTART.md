@@ -1,4 +1,4 @@
-# X-UI Panel - Quick Start Guide
+# 3x-ui Panel - Quick Start Guide
 
 ## What You Need
 
@@ -92,7 +92,7 @@ Confirm password: ******
 
 The script will automatically:
 - ✅ Install all required packages
-- ✅ Install X-UI panel
+- ✅ Install 3x-ui panel (enhanced version with better UI/UX and more features)
 - ✅ Configure your username, password, and port
 - ✅ Set panel language to English
 - ✅ Configure firewall
@@ -108,7 +108,7 @@ After installation, you'll see:
 
 ```
 ═══════════════════════════════════════════════════════════
-           X-UI Panel Installation Complete!
+          3x-ui Panel Installation Complete!
 ═══════════════════════════════════════════════════════════
 
 Panel Access:
@@ -119,7 +119,7 @@ Your Login Credentials:
   Username: myuser
   Password: [SET BY YOU]
   Port:     8443
-  Language: English (en_US)
+  Language: English (en-US)
 ```
 
 ### Step 6: First Login
@@ -198,7 +198,7 @@ After installation:
 
 ## Uninstallation
 
-If you need to completely remove X-UI, use one of these commands:
+If you need to completely remove 3x-ui, use one of these commands:
 
 **Using curl:**
 ```bash
@@ -223,7 +223,7 @@ chmod +x uninstall-xui.sh
 ```
 
 This will remove:
-- X-UI panel and all services
+- 3x-ui panel and all services
 - SSL certificates
 - Firewall rules
 - Cron jobs

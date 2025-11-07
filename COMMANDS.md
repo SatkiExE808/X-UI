@@ -1,6 +1,6 @@
-# X-UI Installation Commands Reference
+# 3x-ui Installation Commands Reference
 
-Quick reference for all installation and management commands.
+Quick reference for all installation and management commands for the 3x-ui panel.
 
 ## Installation Commands
 
@@ -76,13 +76,13 @@ chmod +x uninstall-xui.sh
 
 ---
 
-## X-UI Management Commands
+## 3x-ui Management Commands
 
 ### Service Management
 ```bash
-x-ui start          # Start X-UI service
-x-ui stop           # Stop X-UI service
-x-ui restart        # Restart X-UI service
+x-ui start          # Start 3x-ui service
+x-ui stop           # Stop 3x-ui service
+x-ui restart        # Restart 3x-ui service
 x-ui status         # Check service status
 x-ui               # Open management menu
 ```
