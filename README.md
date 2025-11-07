@@ -185,17 +185,50 @@ systemctl stop nginx
 
 ## Uninstallation
 
-To remove X-UI panel:
+### Complete Uninstallation (Recommended)
+
+Use the comprehensive uninstall script to remove everything:
 
 ```bash
-x-ui uninstall
+bash <(curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/main/uninstall-xui.sh)
 ```
 
-To also remove SSL certificates:
+Or if you have the script locally:
 
 ```bash
+./uninstall-xui.sh
+```
+
+This script will remove:
+- ✓ X-UI panel and service
+- ✓ SSL certificates
+- ✓ Firewall rules
+- ✓ Cron jobs for SSL renewal
+- ✓ All configuration files
+- ✓ Installation info
+
+### Manual Uninstallation
+
+If you prefer to uninstall manually:
+
+```bash
+# Stop and remove X-UI
+x-ui uninstall
+
+# Remove SSL certificates
 certbot revoke --cert-path /etc/letsencrypt/live/your-domain.com/fullchain.pem
 certbot delete --cert-name your-domain.com
+
+# Remove firewall rules (replace YOUR_PORT with your actual port)
+ufw delete allow 80/tcp
+ufw delete allow 443/tcp
+ufw delete allow YOUR_PORT/tcp
+
+# Remove cron jobs
+crontab -e  # manually remove certbot renewal entries
+
+# Remove installation info
+rm -f /root/xui-info.txt
 ```
 
 ## Support & Resources

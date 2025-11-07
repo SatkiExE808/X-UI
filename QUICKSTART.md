@@ -168,6 +168,21 @@ After installation:
 4. ✅ Configure users
 5. ✅ Set up monitoring
 
+## Uninstallation
+
+If you need to completely remove X-UI:
+
+```bash
+bash <(curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/main/uninstall-xui.sh)
+```
+
+This will remove:
+- X-UI panel and all services
+- SSL certificates
+- Firewall rules
+- Cron jobs
+- Configuration files
+
 ## Need Help?
 
 - Installation info saved at: `/root/xui-info.txt`
