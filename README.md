@@ -74,7 +74,8 @@ Once installation completes, you'll see:
 ═══════════════════════════════════════════════════════════
 
 Panel Access:
-  HTTPS URL: https://your-domain.com:YOUR_PORT
+  HTTP URL (access first):  http://your-domain.com:YOUR_PORT
+  HTTPS URL (after setup):  https://your-domain.com:YOUR_PORT
 
 Default Credentials:
   Username: admin
@@ -84,14 +85,18 @@ Default Credentials:
 
 ### Important First Steps
 
-1. **Login to the panel** at `https://your-domain.com:YOUR_PORT`
-2. **Change default credentials immediately!**
-3. **Change the port** (if you selected a custom port) in Panel Settings
-4. **Configure SSL in panel settings:**
+**⚠️ IMPORTANT: Use HTTP first, not HTTPS! SSL is not configured in the panel yet.**
+
+1. **Access the panel** at `http://your-domain.com:YOUR_PORT` (use HTTP, not HTTPS)
+2. **Login** with default credentials (admin/admin)
+3. **Change default credentials immediately!**
+4. **Change the port** (if you selected a custom port) in Panel Settings
+5. **Configure SSL in panel settings:**
    - Go to: Panel Settings → Certificate Configuration
    - Certificate Path: `/etc/letsencrypt/live/your-domain.com/fullchain.pem`
    - Private Key Path: `/etc/letsencrypt/live/your-domain.com/privkey.pem`
-   - Enable HTTPS and restart
+   - Save and restart the panel
+6. **Now access via HTTPS:** `https://your-domain.com:YOUR_PORT`
 
 ## X-UI Management Commands
 

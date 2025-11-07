@@ -79,7 +79,8 @@ After installation, you'll see:
 ═══════════════════════════════════════════════════════════
 
 Panel Access:
-  HTTPS URL: https://panel.yourdomain.com:YOUR_PORT
+  HTTP URL (access first):  http://panel.yourdomain.com:YOUR_PORT
+  HTTPS URL (after setup):  https://panel.yourdomain.com:YOUR_PORT
 
 Default Credentials:
   Username: admin
@@ -88,7 +89,9 @@ Default Credentials:
 
 ### Step 6: First Login
 
-1. Open your browser and visit the HTTPS URL shown (e.g., `https://panel.yourdomain.com:8443`)
+**⚠️ IMPORTANT: Use HTTP first, not HTTPS!**
+
+1. Open your browser and visit: `http://panel.yourdomain.com:8443` **(use HTTP, not HTTPS)**
 2. Login with:
    - Username: `admin`
    - Password: `admin`
@@ -101,13 +104,15 @@ Default Credentials:
    - Change the port to match what you selected during installation
    - Restart the panel
 
-2. **Enable HTTPS**:
+2. **Configure SSL Certificate**:
    - Go to **Panel Settings** → **Certificate Configuration**
    - Enter the certificate paths shown during installation:
      - **Public Key File Path**: `/etc/letsencrypt/live/panel.yourdomain.com/fullchain.pem`
      - **Private Key File Path**: `/etc/letsencrypt/live/panel.yourdomain.com/privkey.pem`
    - Click **Save**
    - Restart the panel
+
+3. **Now you can use HTTPS**: Visit `https://panel.yourdomain.com:8443`
 
 ## Common Issues
 
@@ -134,11 +139,14 @@ firewall-cmd --permanent --add-port=YOUR_PORT/tcp
 firewall-cmd --reload
 ```
 
-### "Connection not secure" warning
+### "ERR_SSL_PROTOCOL_ERROR" or "Connection not secure" warning
 
-**Cause**: SSL not configured in panel yet
+**Cause**: Trying to access HTTPS before SSL is configured in the panel
 
-**Fix**: Follow Step 7 above to configure SSL in the panel settings
+**Fix**:
+1. Use HTTP instead: `http://panel.yourdomain.com:YOUR_PORT`
+2. Login and configure SSL in Panel Settings (Step 7 above)
+3. After SSL is configured, you can use HTTPS
 
 ## Useful Commands
 
