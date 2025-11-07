@@ -37,6 +37,7 @@ The script will ask you:
 
 1. **Domain Name**: Enter your full domain (e.g., `panel.yourdomain.com`)
 2. **Email Address**: Enter your email for SSL certificate notifications
+3. **Port Number**: Choose your panel port (default: 54321, or enter custom port)
 
 Example interaction:
 ```
@@ -49,6 +50,11 @@ Enter your domain name (e.g., panel.example.com): panel.yourdomain.com
 Enter your email for SSL certificate (Let's Encrypt): you@email.com
 ════════════════════════════════════════
 [SUCCESS] Email set to: you@email.com
+
+════════════════════════════════════════
+Enter port for X-UI panel (default: 54321): 8443
+════════════════════════════════════════
+[SUCCESS] Port set to: 8443
 ```
 
 ### Step 4: Wait for Installation
@@ -73,7 +79,7 @@ After installation, you'll see:
 ═══════════════════════════════════════════════════════════
 
 Panel Access:
-  HTTPS URL: https://panel.yourdomain.com:54321
+  HTTPS URL: https://panel.yourdomain.com:YOUR_PORT
 
 Default Credentials:
   Username: admin
@@ -82,20 +88,26 @@ Default Credentials:
 
 ### Step 6: First Login
 
-1. Open your browser and visit: `https://panel.yourdomain.com:54321`
+1. Open your browser and visit the HTTPS URL shown (e.g., `https://panel.yourdomain.com:8443`)
 2. Login with:
    - Username: `admin`
    - Password: `admin`
 3. **IMMEDIATELY CHANGE YOUR PASSWORD!**
 
-### Step 7: Enable HTTPS in Panel
+### Step 7: Configure Panel Settings
 
-1. Go to **Panel Settings** → **Certificate Configuration**
-2. Enter the certificate paths:
-   - **Public Key File Path**: `/etc/letsencrypt/live/panel.yourdomain.com/fullchain.pem`
-   - **Private Key File Path**: `/etc/letsencrypt/live/panel.yourdomain.com/privkey.pem`
-3. Click **Save**
-4. Restart the panel
+1. **Change the port** (if you selected a custom port):
+   - Go to **Panel Settings**
+   - Change the port to match what you selected during installation
+   - Restart the panel
+
+2. **Enable HTTPS**:
+   - Go to **Panel Settings** → **Certificate Configuration**
+   - Enter the certificate paths shown during installation:
+     - **Public Key File Path**: `/etc/letsencrypt/live/panel.yourdomain.com/fullchain.pem`
+     - **Private Key File Path**: `/etc/letsencrypt/live/panel.yourdomain.com/privkey.pem`
+   - Click **Save**
+   - Restart the panel
 
 ## Common Issues
 
@@ -110,15 +122,15 @@ Default Credentials:
 
 ### "Cannot access panel"
 
-**Cause**: Firewall blocking port 54321
+**Cause**: Firewall blocking your chosen port
 
 **Fix**:
 ```bash
-# For UFW
-ufw allow 54321/tcp
+# For UFW (replace YOUR_PORT with your actual port)
+ufw allow YOUR_PORT/tcp
 
-# For FirewallD
-firewall-cmd --permanent --add-port=54321/tcp
+# For FirewallD (replace YOUR_PORT with your actual port)
+firewall-cmd --permanent --add-port=YOUR_PORT/tcp
 firewall-cmd --reload
 ```
 

@@ -101,6 +101,46 @@ get_email() {
     done
 }
 
+# Get port for X-UI panel
+get_port() {
+    while true; do
+        echo ""
+        echo -e "${BLUE}════════════════════════════════════════${NC}"
+        read -p "Enter port for X-UI panel (default: 54321): " PANEL_PORT
+        echo -e "${BLUE}════════════════════════════════════════${NC}"
+
+        # Use default if empty
+        if [ -z "$PANEL_PORT" ]; then
+            PANEL_PORT=54321
+            print_info "Using default port: $PANEL_PORT"
+            break
+        fi
+
+        # Validate port number
+        if ! [[ "$PANEL_PORT" =~ ^[0-9]+$ ]]; then
+            print_error "Port must be a number"
+            continue
+        fi
+
+        if [ "$PANEL_PORT" -lt 1 ] || [ "$PANEL_PORT" -gt 65535 ]; then
+            print_error "Port must be between 1 and 65535"
+            continue
+        fi
+
+        # Warn about common reserved ports
+        if [ "$PANEL_PORT" -lt 1024 ]; then
+            print_warning "Port $PANEL_PORT is in the reserved range (1-1023)"
+            read -p "Are you sure you want to use this port? (y/n): " confirm
+            if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+                continue
+            fi
+        fi
+
+        print_success "Port set to: $PANEL_PORT"
+        break
+    done
+}
+
 # Fix DNS if needed
 fix_dns() {
     print_info "Checking DNS resolution..."
@@ -234,6 +274,10 @@ install_xui() {
     bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
 
     print_success "X-UI installed successfully"
+
+    if [ "$PANEL_PORT" != "54321" ]; then
+        print_warning "Remember to change the panel port to $PANEL_PORT in the X-UI panel settings"
+    fi
 }
 
 # Configure firewall
@@ -244,16 +288,16 @@ configure_firewall() {
     if command -v ufw &> /dev/null; then
         ufw allow 80/tcp
         ufw allow 443/tcp
-        ufw allow 54321/tcp
-        print_success "UFW firewall rules added"
+        ufw allow ${PANEL_PORT}/tcp
+        print_success "UFW firewall rules added (ports 80, 443, $PANEL_PORT)"
     elif command -v firewall-cmd &> /dev/null; then
         firewall-cmd --permanent --add-port=80/tcp
         firewall-cmd --permanent --add-port=443/tcp
-        firewall-cmd --permanent --add-port=54321/tcp
+        firewall-cmd --permanent --add-port=${PANEL_PORT}/tcp
         firewall-cmd --reload
-        print_success "Firewalld rules added"
+        print_success "Firewalld rules added (ports 80, 443, $PANEL_PORT)"
     else
-        print_warning "No firewall detected. Please manually open ports 80, 443, and 54321"
+        print_warning "No firewall detected. Please manually open ports 80, 443, and $PANEL_PORT"
     fi
 }
 
@@ -327,8 +371,8 @@ display_info() {
     echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
     echo ""
     echo -e "${BLUE}Panel Access:${NC}"
-    echo -e "  HTTPS URL: ${GREEN}https://$DOMAIN:54321${NC}"
-    echo -e "  HTTP URL:  ${YELLOW}http://$SERVER_IP:54321${NC} (Fallback)"
+    echo -e "  HTTPS URL: ${GREEN}https://$DOMAIN:$PANEL_PORT${NC}"
+    echo -e "  HTTP URL:  ${YELLOW}http://$SERVER_IP:$PANEL_PORT${NC} (Fallback)"
     echo ""
     echo -e "${BLUE}Default Credentials:${NC}"
     echo -e "  Username: ${GREEN}admin${NC}"
@@ -340,12 +384,19 @@ display_info() {
     echo -e "  Private Key: ${GREEN}/etc/letsencrypt/live/$DOMAIN/privkey.pem${NC}"
     echo ""
     echo -e "${BLUE}Important Next Steps:${NC}"
-    echo -e "  1. Visit ${GREEN}https://$DOMAIN:54321${NC}"
+    echo -e "  1. Visit ${GREEN}https://$DOMAIN:$PANEL_PORT${NC}"
     echo -e "  2. Login with default credentials (admin/admin)"
     echo -e "  3. ${RED}Change your username and password${NC}"
+    if [ "$PANEL_PORT" != "54321" ]; then
+    echo -e "  4. ${YELLOW}Go to Panel Settings and change port to $PANEL_PORT${NC}"
+    echo -e "  5. Go to Panel Settings → Certificate Configuration"
+    echo -e "  6. Enter the SSL certificate paths shown above"
+    echo -e "  7. Enable HTTPS and restart the panel"
+    else
     echo -e "  4. Go to Panel Settings → Certificate Configuration"
     echo -e "  5. Enter the SSL certificate paths shown above"
     echo -e "  6. Enable HTTPS and restart the panel"
+    fi
     echo ""
     echo -e "${BLUE}Useful Commands:${NC}"
     echo -e "  x-ui start   - Start X-UI"
@@ -365,10 +416,11 @@ X-UI Panel Installation Information
 Installation Date: $(date)
 Domain: $DOMAIN
 Email: $EMAIL
+Port: $PANEL_PORT
 
 Access URLs:
-  HTTPS: https://$DOMAIN:54321
-  HTTP:  http://$SERVER_IP:54321
+  HTTPS: https://$DOMAIN:$PANEL_PORT
+  HTTP:  http://$SERVER_IP:$PANEL_PORT
 
 Default Credentials:
   Username: admin
@@ -408,7 +460,7 @@ EOF
 
     print_warning "Please ensure:"
     print_warning "1. Your domain DNS is already pointing to this server"
-    print_warning "2. Ports 80, 443, and 54321 are available"
+    print_warning "2. Ports 80 and 443 are available for SSL"
     print_warning "3. You are running this on a clean server"
     echo ""
     read -p "Press Enter to continue or Ctrl+C to cancel..."
@@ -417,6 +469,7 @@ EOF
     check_root
     get_domain
     get_email
+    get_port
     check_system
     fix_dns
     update_system

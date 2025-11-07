@@ -52,11 +52,12 @@ The script will guide you through:
 
 1. **Domain Input** - Enter your fully qualified domain name (e.g., `panel.example.com`)
 2. **Email Input** - Provide an email for SSL certificate notifications
-3. **Automatic Setup** - Sit back while the script:
+3. **Port Selection** - Choose your panel port (default: 54321, or specify custom port)
+4. **Automatic Setup** - Sit back while the script:
    - Updates system packages
    - Installs dependencies
    - Installs X-UI panel
-   - Configures firewall rules
+   - Configures firewall rules for your chosen port
    - Obtains SSL certificate
    - Sets up HTTPS
    - Configures auto-renewal
@@ -73,7 +74,7 @@ Once installation completes, you'll see:
 ═══════════════════════════════════════════════════════════
 
 Panel Access:
-  HTTPS URL: https://your-domain.com:54321
+  HTTPS URL: https://your-domain.com:YOUR_PORT
 
 Default Credentials:
   Username: admin
@@ -83,9 +84,10 @@ Default Credentials:
 
 ### Important First Steps
 
-1. **Login to the panel** at `https://your-domain.com:54321`
+1. **Login to the panel** at `https://your-domain.com:YOUR_PORT`
 2. **Change default credentials immediately!**
-3. **Configure SSL in panel settings:**
+3. **Change the port** (if you selected a custom port) in Panel Settings
+4. **Configure SSL in panel settings:**
    - Go to: Panel Settings → Certificate Configuration
    - Certificate Path: `/etc/letsencrypt/live/your-domain.com/fullchain.pem`
    - Private Key Path: `/etc/letsencrypt/live/your-domain.com/privkey.pem`
