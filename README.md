@@ -190,7 +190,7 @@ systemctl stop nginx
 Use the comprehensive uninstall script to remove everything:
 
 ```bash
-bash <(curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/main/uninstall-xui.sh)
+bash <(curl -sL https://raw.githubusercontent.com/SatkiExE808/X-UI/claude/x-ui-panel-setup-011CUsYrmmfVeqB3WxdFdhFT/uninstall-xui.sh)
 ```
 
 Or if you have the script locally:
