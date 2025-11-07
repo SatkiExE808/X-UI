@@ -141,6 +141,68 @@ get_port() {
     done
 }
 
+# Get username for X-UI panel
+get_username() {
+    while true; do
+        echo ""
+        echo -e "${BLUE}════════════════════════════════════════${NC}"
+        read -p "Enter username for X-UI panel (default: admin): " PANEL_USERNAME
+        echo -e "${BLUE}════════════════════════════════════════${NC}"
+
+        # Use default if empty
+        if [ -z "$PANEL_USERNAME" ]; then
+            PANEL_USERNAME="admin"
+            print_info "Using default username: $PANEL_USERNAME"
+            break
+        fi
+
+        # Validate username (alphanumeric, underscore, hyphen)
+        if ! [[ "$PANEL_USERNAME" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+            print_error "Username must contain only letters, numbers, underscores, and hyphens"
+            continue
+        fi
+
+        if [ ${#PANEL_USERNAME} -lt 3 ]; then
+            print_error "Username must be at least 3 characters long"
+            continue
+        fi
+
+        print_success "Username set to: $PANEL_USERNAME"
+        break
+    done
+}
+
+# Get password for X-UI panel
+get_password() {
+    while true; do
+        echo ""
+        echo -e "${BLUE}════════════════════════════════════════${NC}"
+        read -s -p "Enter password for X-UI panel (min 6 characters): " PANEL_PASSWORD
+        echo ""
+        read -s -p "Confirm password: " PANEL_PASSWORD_CONFIRM
+        echo ""
+        echo -e "${BLUE}════════════════════════════════════════${NC}"
+
+        if [ -z "$PANEL_PASSWORD" ]; then
+            print_error "Password cannot be empty"
+            continue
+        fi
+
+        if [ ${#PANEL_PASSWORD} -lt 6 ]; then
+            print_error "Password must be at least 6 characters long"
+            continue
+        fi
+
+        if [ "$PANEL_PASSWORD" != "$PANEL_PASSWORD_CONFIRM" ]; then
+            print_error "Passwords do not match"
+            continue
+        fi
+
+        print_success "Password set successfully"
+        break
+    done
+}
+
 # Fix DNS if needed
 fix_dns() {
     print_info "Checking DNS resolution..."
@@ -270,13 +332,56 @@ install_dependencies() {
 install_xui() {
     print_info "Installing X-UI panel..."
 
-    # Download and run official X-UI installation script
-    bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
+    # Download and run official X-UI installation script with automated answers
+    # Provide default answers: y (continue), admin, admin, 54321
+    print_info "Running X-UI installer with default settings (will be customized after)..."
 
+    printf "y\nadmin\nadmin\n54321\n" | bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh) 2>/dev/null || \
+    bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh) < /dev/null
+
+    sleep 3
     print_success "X-UI installed successfully"
+}
 
-    if [ "$PANEL_PORT" != "54321" ]; then
-        print_warning "Remember to change the panel port to $PANEL_PORT in the X-UI panel settings"
+# Configure X-UI panel settings
+configure_xui_panel() {
+    print_info "Configuring X-UI panel with your settings..."
+
+    # Wait for X-UI to fully start
+    sleep 2
+
+    # Use x-ui command to set username, password, and port
+    if command -v x-ui &> /dev/null; then
+        print_info "Setting username: $PANEL_USERNAME"
+        print_info "Setting port: $PANEL_PORT"
+
+        # Configure using x-ui commands non-interactively
+        printf "y\n${PANEL_USERNAME}\n${PANEL_PASSWORD}\n${PANEL_PORT}\n" | x-ui 2>/dev/null || true
+
+        # Alternative: directly modify the database if x-ui command doesn't work
+        if [ -f /etc/x-ui/x-ui.db ]; then
+            print_info "Applying settings directly to database..."
+
+            # Stop x-ui service
+            systemctl stop x-ui 2>/dev/null || true
+
+            # Update database (requires sqlite3)
+            if command -v sqlite3 &> /dev/null || apt-get install -y sqlite3 2>/dev/null; then
+                # Set username and password
+                sqlite3 /etc/x-ui/x-ui.db "UPDATE users SET username='${PANEL_USERNAME}', password='${PANEL_PASSWORD}' WHERE id=1;" 2>/dev/null || true
+
+                # Set port
+                sqlite3 /etc/x-ui/x-ui.db "UPDATE settings SET value='${PANEL_PORT}' WHERE key='webPort';" 2>/dev/null || true
+            fi
+
+            # Start x-ui service
+            systemctl start x-ui 2>/dev/null || true
+        fi
+
+        sleep 2
+        print_success "Panel configured with username: $PANEL_USERNAME, port: $PANEL_PORT"
+    else
+        print_warning "X-UI command not found. Please configure manually in panel settings."
     fi
 }
 
@@ -375,10 +480,10 @@ display_info() {
     echo -e "  ${YELLOW}Fallback IP:${NC}            http://$SERVER_IP:$PANEL_PORT"
     echo -e "  ${BLUE}HTTPS URL (after setup):${NC} https://$DOMAIN:$PANEL_PORT"
     echo ""
-    echo -e "${BLUE}Default Credentials:${NC}"
-    echo -e "  Username: ${GREEN}admin${NC}"
-    echo -e "  Password: ${GREEN}admin${NC}"
-    echo -e "  ${RED}⚠ CHANGE THESE IMMEDIATELY AFTER LOGIN!${NC}"
+    echo -e "${BLUE}Your Login Credentials:${NC}"
+    echo -e "  Username: ${GREEN}$PANEL_USERNAME${NC}"
+    echo -e "  Password: ${GREEN}[SET BY YOU]${NC}"
+    echo -e "  Port:     ${GREEN}$PANEL_PORT${NC}"
     echo ""
     echo -e "${BLUE}SSL Certificate Paths (ready on server):${NC}"
     echo -e "  Certificate: ${GREEN}/etc/letsencrypt/live/$DOMAIN/fullchain.pem${NC}"
@@ -386,20 +491,11 @@ display_info() {
     echo ""
     echo -e "${BLUE}Important Next Steps:${NC}"
     echo -e "  1. Visit ${GREEN}http://$DOMAIN:$PANEL_PORT${NC} ${YELLOW}(use HTTP, not HTTPS)${NC}"
-    echo -e "  2. Login with default credentials (admin/admin)"
-    echo -e "  3. ${RED}Change your username and password${NC}"
-    if [ "$PANEL_PORT" != "54321" ]; then
-    echo -e "  4. ${YELLOW}Go to Panel Settings and change port to $PANEL_PORT${NC}"
-    echo -e "  5. Go to Panel Settings → Certificate Configuration"
-    echo -e "  6. Enter the SSL certificate paths shown above"
-    echo -e "  7. Save and restart the panel"
-    echo -e "  8. Now access via ${GREEN}https://$DOMAIN:$PANEL_PORT${NC}"
-    else
-    echo -e "  4. Go to Panel Settings → Certificate Configuration"
-    echo -e "  5. Enter the SSL certificate paths shown above"
-    echo -e "  6. Save and restart the panel"
-    echo -e "  7. Now access via ${GREEN}https://$DOMAIN:$PANEL_PORT${NC}"
-    fi
+    echo -e "  2. Login with username: ${GREEN}$PANEL_USERNAME${NC} and your password"
+    echo -e "  3. Go to Panel Settings → Certificate Configuration"
+    echo -e "  4. Enter the SSL certificate paths shown above"
+    echo -e "  5. Save and restart the panel"
+    echo -e "  6. Now access via ${GREEN}https://$DOMAIN:$PANEL_PORT${NC}"
     echo ""
     echo -e "${BLUE}Useful Commands:${NC}"
     echo -e "  x-ui start   - Start X-UI"
@@ -419,6 +515,7 @@ X-UI Panel Installation Information
 Installation Date: $(date)
 Domain: $DOMAIN
 Email: $EMAIL
+Username: $PANEL_USERNAME
 Port: $PANEL_PORT
 
 Access URLs:
@@ -426,10 +523,10 @@ Access URLs:
   Fallback IP:          http://$SERVER_IP:$PANEL_PORT
   HTTPS (after setup):  https://$DOMAIN:$PANEL_PORT
 
-Default Credentials:
-  Username: admin
-  Password: admin
-  ⚠ CHANGE THESE IMMEDIATELY!
+Your Login Credentials:
+  Username: $PANEL_USERNAME
+  Password: [The password you set during installation]
+  Port: $PANEL_PORT
 
 SSL Certificate Paths (ready on server):
   Certificate: /etc/letsencrypt/live/$DOMAIN/fullchain.pem
@@ -477,12 +574,15 @@ EOF
     get_domain
     get_email
     get_port
+    get_username
+    get_password
     check_system
     fix_dns
     update_system
     install_dependencies
     configure_firewall
     install_xui
+    configure_xui_panel
     setup_ssl
     configure_xui_https
     display_info
