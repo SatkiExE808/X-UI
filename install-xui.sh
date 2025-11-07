@@ -372,6 +372,13 @@ configure_xui_panel() {
 
                 # Set port
                 sqlite3 /etc/x-ui/x-ui.db "UPDATE settings SET value='${PANEL_PORT}' WHERE key='webPort';" 2>/dev/null || true
+
+                # Set language to English
+                print_info "Setting panel language to English..."
+                sqlite3 /etc/x-ui/x-ui.db "INSERT OR REPLACE INTO settings (key, value) VALUES ('webLang', 'en_US');" 2>/dev/null || true
+                sqlite3 /etc/x-ui/x-ui.db "INSERT OR REPLACE INTO settings (key, value) VALUES ('locale', 'en_US');" 2>/dev/null || true
+
+                print_success "Language set to English"
             fi
 
             # Start x-ui service
@@ -379,7 +386,7 @@ configure_xui_panel() {
         fi
 
         sleep 2
-        print_success "Panel configured with username: $PANEL_USERNAME, port: $PANEL_PORT"
+        print_success "Panel configured: username=$PANEL_USERNAME, port=$PANEL_PORT, language=English"
     else
         print_warning "X-UI command not found. Please configure manually in panel settings."
     fi
@@ -484,6 +491,7 @@ display_info() {
     echo -e "  Username: ${GREEN}$PANEL_USERNAME${NC}"
     echo -e "  Password: ${GREEN}[SET BY YOU]${NC}"
     echo -e "  Port:     ${GREEN}$PANEL_PORT${NC}"
+    echo -e "  Language: ${GREEN}English (en_US)${NC}"
     echo ""
     echo -e "${BLUE}SSL Certificate Paths (ready on server):${NC}"
     echo -e "  Certificate: ${GREEN}/etc/letsencrypt/live/$DOMAIN/fullchain.pem${NC}"
@@ -527,6 +535,7 @@ Your Login Credentials:
   Username: $PANEL_USERNAME
   Password: [The password you set during installation]
   Port: $PANEL_PORT
+  Language: English (en_US)
 
 SSL Certificate Paths (ready on server):
   Certificate: /etc/letsencrypt/live/$DOMAIN/fullchain.pem
