@@ -371,31 +371,34 @@ display_info() {
     echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
     echo ""
     echo -e "${BLUE}Panel Access:${NC}"
-    echo -e "  HTTPS URL: ${GREEN}https://$DOMAIN:$PANEL_PORT${NC}"
-    echo -e "  HTTP URL:  ${YELLOW}http://$SERVER_IP:$PANEL_PORT${NC} (Fallback)"
+    echo -e "  ${GREEN}HTTP URL (access first):${NC}  http://$DOMAIN:$PANEL_PORT"
+    echo -e "  ${YELLOW}Fallback IP:${NC}            http://$SERVER_IP:$PANEL_PORT"
+    echo -e "  ${BLUE}HTTPS URL (after setup):${NC} https://$DOMAIN:$PANEL_PORT"
     echo ""
     echo -e "${BLUE}Default Credentials:${NC}"
     echo -e "  Username: ${GREEN}admin${NC}"
     echo -e "  Password: ${GREEN}admin${NC}"
     echo -e "  ${RED}⚠ CHANGE THESE IMMEDIATELY AFTER LOGIN!${NC}"
     echo ""
-    echo -e "${BLUE}SSL Certificate:${NC}"
+    echo -e "${BLUE}SSL Certificate Paths (ready on server):${NC}"
     echo -e "  Certificate: ${GREEN}/etc/letsencrypt/live/$DOMAIN/fullchain.pem${NC}"
     echo -e "  Private Key: ${GREEN}/etc/letsencrypt/live/$DOMAIN/privkey.pem${NC}"
     echo ""
     echo -e "${BLUE}Important Next Steps:${NC}"
-    echo -e "  1. Visit ${GREEN}https://$DOMAIN:$PANEL_PORT${NC}"
+    echo -e "  1. Visit ${GREEN}http://$DOMAIN:$PANEL_PORT${NC} ${YELLOW}(use HTTP, not HTTPS)${NC}"
     echo -e "  2. Login with default credentials (admin/admin)"
     echo -e "  3. ${RED}Change your username and password${NC}"
     if [ "$PANEL_PORT" != "54321" ]; then
     echo -e "  4. ${YELLOW}Go to Panel Settings and change port to $PANEL_PORT${NC}"
     echo -e "  5. Go to Panel Settings → Certificate Configuration"
     echo -e "  6. Enter the SSL certificate paths shown above"
-    echo -e "  7. Enable HTTPS and restart the panel"
+    echo -e "  7. Save and restart the panel"
+    echo -e "  8. Now access via ${GREEN}https://$DOMAIN:$PANEL_PORT${NC}"
     else
     echo -e "  4. Go to Panel Settings → Certificate Configuration"
     echo -e "  5. Enter the SSL certificate paths shown above"
-    echo -e "  6. Enable HTTPS and restart the panel"
+    echo -e "  6. Save and restart the panel"
+    echo -e "  7. Now access via ${GREEN}https://$DOMAIN:$PANEL_PORT${NC}"
     fi
     echo ""
     echo -e "${BLUE}Useful Commands:${NC}"
@@ -419,17 +422,21 @@ Email: $EMAIL
 Port: $PANEL_PORT
 
 Access URLs:
-  HTTPS: https://$DOMAIN:$PANEL_PORT
-  HTTP:  http://$SERVER_IP:$PANEL_PORT
+  HTTP (access first):  http://$DOMAIN:$PANEL_PORT
+  Fallback IP:          http://$SERVER_IP:$PANEL_PORT
+  HTTPS (after setup):  https://$DOMAIN:$PANEL_PORT
 
 Default Credentials:
   Username: admin
   Password: admin
   ⚠ CHANGE THESE IMMEDIATELY!
 
-SSL Certificate Paths:
+SSL Certificate Paths (ready on server):
   Certificate: /etc/letsencrypt/live/$DOMAIN/fullchain.pem
   Private Key: /etc/letsencrypt/live/$DOMAIN/privkey.pem
+
+IMPORTANT: Access via HTTP first, configure SSL in panel settings,
+then you can use HTTPS!
 
 Commands:
   x-ui start   - Start X-UI
