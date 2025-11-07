@@ -102,12 +102,12 @@ get_email() {
     done
 }
 
-# Get port for X-UI panel
+# Get port for 3x-ui panel
 get_port() {
     while true; do
         echo ""
         echo -e "${BLUE}════════════════════════════════════════${NC}"
-        read -p "Enter port for X-UI panel (default: 54321): " PANEL_PORT
+        read -p "Enter port for 3x-ui panel (default: 54321): " PANEL_PORT
         echo -e "${BLUE}════════════════════════════════════════${NC}"
 
         # Use default if empty
@@ -142,12 +142,12 @@ get_port() {
     done
 }
 
-# Get username for X-UI panel
+# Get username for 3x-ui panel
 get_username() {
     while true; do
         echo ""
         echo -e "${BLUE}════════════════════════════════════════${NC}"
-        read -p "Enter username for X-UI panel (default: admin): " PANEL_USERNAME
+        read -p "Enter username for 3x-ui panel (default: admin): " PANEL_USERNAME
         echo -e "${BLUE}════════════════════════════════════════${NC}"
 
         # Use default if empty
@@ -173,12 +173,12 @@ get_username() {
     done
 }
 
-# Get password for X-UI panel
+# Get password for 3x-ui panel
 get_password() {
     while true; do
         echo ""
         echo -e "${BLUE}════════════════════════════════════════${NC}"
-        read -s -p "Enter password for X-UI panel (min 6 characters): " PANEL_PASSWORD
+        read -s -p "Enter password for 3x-ui panel (min 6 characters): " PANEL_PASSWORD
         echo ""
         read -s -p "Confirm password: " PANEL_PASSWORD_CONFIRM
         echo ""
