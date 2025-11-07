@@ -101,6 +101,39 @@ get_email() {
     done
 }
 
+# Fix DNS if needed
+fix_dns() {
+    print_info "Checking DNS resolution..."
+
+    if ! ping -c 1 -W 3 google.com &> /dev/null; then
+        print_warning "DNS resolution issue detected. Attempting to fix..."
+
+        # Backup existing resolv.conf
+        if [ -f /etc/resolv.conf ]; then
+            cp /etc/resolv.conf /etc/resolv.conf.backup
+        fi
+
+        # Set reliable DNS servers
+        cat > /etc/resolv.conf << EOF
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+nameserver 1.1.1.1
+nameserver 1.0.0.1
+EOF
+
+        # Test again
+        sleep 2
+        if ping -c 1 -W 3 google.com &> /dev/null; then
+            print_success "DNS issue resolved"
+        else
+            print_error "Could not resolve DNS issue. Please check your network connection."
+            exit 1
+        fi
+    else
+        print_success "DNS resolution working correctly"
+    fi
+}
+
 # Check system compatibility
 check_system() {
     print_info "Checking system compatibility..."
@@ -125,30 +158,72 @@ check_system() {
 update_system() {
     print_info "Updating system packages..."
 
-    if command -v apt-get &> /dev/null; then
-        apt-get update -y
-        apt-get upgrade -y
-    elif command -v yum &> /dev/null; then
-        yum update -y
-    else
-        print_warning "Could not detect package manager"
-    fi
+    local retry_count=0
+    local max_retries=3
+
+    while [ $retry_count -lt $max_retries ]; do
+        if command -v apt-get &> /dev/null; then
+            if apt-get update -y && apt-get upgrade -y; then
+                print_success "System packages updated"
+                return 0
+            fi
+        elif command -v yum &> /dev/null; then
+            if yum update -y; then
+                print_success "System packages updated"
+                return 0
+            fi
+        else
+            print_warning "Could not detect package manager"
+            return 0
+        fi
+
+        retry_count=$((retry_count + 1))
+        if [ $retry_count -lt $max_retries ]; then
+            print_warning "Update failed, retrying ($retry_count/$max_retries)..."
+            sleep 5
+        fi
+    done
+
+    print_error "Failed to update system packages after $max_retries attempts"
+    exit 1
 }
 
 # Install dependencies
 install_dependencies() {
     print_info "Installing required dependencies..."
 
-    if command -v apt-get &> /dev/null; then
-        apt-get install -y curl wget tar socat certbot
-    elif command -v yum &> /dev/null; then
-        yum install -y curl wget tar socat certbot
-    else
-        print_error "Unsupported package manager"
-        exit 1
-    fi
+    local retry_count=0
+    local max_retries=3
 
-    print_success "Dependencies installed"
+    while [ $retry_count -lt $max_retries ]; do
+        if command -v apt-get &> /dev/null; then
+            # Try to update package list first
+            apt-get update --fix-missing -y 2>/dev/null || true
+
+            if apt-get install -y curl wget tar socat certbot 2>&1; then
+                print_success "Dependencies installed"
+                return 0
+            fi
+        elif command -v yum &> /dev/null; then
+            if yum install -y curl wget tar socat certbot; then
+                print_success "Dependencies installed"
+                return 0
+            fi
+        else
+            print_error "Unsupported package manager"
+            exit 1
+        fi
+
+        retry_count=$((retry_count + 1))
+        if [ $retry_count -lt $max_retries ]; then
+            print_warning "Installation failed, retrying ($retry_count/$max_retries)..."
+            sleep 5
+        fi
+    done
+
+    print_error "Failed to install dependencies after $max_retries attempts"
+    print_error "Please check your internet connection and try again"
+    exit 1
 }
 
 # Install X-UI
@@ -343,6 +418,7 @@ EOF
     get_domain
     get_email
     check_system
+    fix_dns
     update_system
     install_dependencies
     configure_firewall
